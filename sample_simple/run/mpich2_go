@@ -1,1 +1,2 @@
+../src/mapping_table
 mpiexec -n 1 ./comp1 : -n 1 ./comp2
