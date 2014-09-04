@@ -40,7 +40,8 @@ program comp1
 
   call jcup_put_data(varp, data)
 
-  open(unit = FID, file="comp1.dat", form="unformatted", status="replace", access="direct", recl=COMP1_NX*COMP1_NY*COMP1_NZ)
+  !! note that a unit of recl here is 'BYTE', not WORD, so DO NOT FORGET TO use '-assume byterecl' for INTEL Fortran.
+  open(unit = FID, file="comp1.dat", form="unformatted", status="replace", access="direct", recl=COMP1_NX*COMP1_NY*COMP1_NZ*4)
 
   do t = 1, 3
     data4 = data

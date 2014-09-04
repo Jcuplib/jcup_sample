@@ -45,7 +45,8 @@ program comp2
   allocate(data(COMP2_NX*COMP2_NY,COMP2_NZ))
   allocate(data4(COMP2_NX*COMP2_NY,COMP2_NZ))
 
-  open(unit = FID, file="comp2.dat", form="unformatted", status="replace", access="direct", recl=COMP2_NX*COMP2_NY*COMP2_NZ)
+  !! note that a unit of recl here is 'BYTE', not WORD, so DO NOT FORGET TO use '-assume byterecl' for INTEL Fortran.
+  open(unit = FID, file="comp2.dat", form="unformatted", status="replace", access="direct", recl=COMP2_NX*COMP2_NY*COMP2_NZ*4)
 
   do t = 1, 3
     data(:,:) = 0.d0
