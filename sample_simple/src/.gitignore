@@ -1,0 +1,7 @@
+*.lst
+*.mod
+*.o
+*~
+/comp1
+/comp2
+/mapping_table
