@@ -4,11 +4,17 @@ include ../../Mkinclude
 
 OBJS = dynamics.o
 SRCS = $(OBJS:.o=.f90)
-MODS = $(OBJS:.o=.mod)
+# MODS = $(OBJS:.o=.mod)
 
-dynamics : $(SRCS) 
-	$(FC) $(FFLAGS) -I$(INCJCUP) -c $^
-	mv $(OBJS) $(BINDIR)
-	mv $(MODS) $(BINDIR)
+all : $(OBJS) $(BINDIR)
+	$(CP) $(OBJS) $(BINDIR) 
+	$(CP) *.mod $(BINDIR)
+
 clean:
-	-rm -f *.mod *.o
+	$(RM) $(TRASH)
+
+$(BINDIR):
+	mkdir -p $@
+
+%.o : %.f90
+	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<

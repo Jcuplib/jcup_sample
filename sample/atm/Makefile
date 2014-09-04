@@ -4,29 +4,37 @@ include ../Mkinclude
 
 MODEL = atm
 TARGET = $(MODEL).exe
-OBJS = dynamics.o atm.o field_def.o driver.o land.o
+OBJS = $(MODEL).o
 SRCS = $(OBJS:.o=.f90)
-MODS = $(OBJS:.o=.mod)
+# MODS = $(OBJS:.o=.mod)
 
-${TARGET} : $(OBJS)
-	cd $(BINDIR) ; $(FC) $(LDFLAGS) -o $@ $^ $(JOBJ) $(LIBS) $(LIBJCUP)
+all : $(OBJS) $(BINDIR)
+	$(CP) $(OBJS) $(BINDIR) 
+	$(CP) *.mod $(BINDIR)
 
-clean:
-	-rm -f *mod *o
+clean: clean-sub
+	$(RM) $(TRASH)
 
-dynamics.o:
-	cd $(DYNAMICS) ; make
+clean-sub:
+	$(MAKE) -C $(DYNAMICS) clean
 
-.f90.o:	
-	$(FC) $(FFLAGS) -I$(INCJCUP) -I$(BINDIR) -c $<
-	mv $(MODEL).o $(BINDIR) 
-	mv mod_$(MODEL).mod $(BINDIR)
+$(BINDIR):
+	mkdir -p $@
 
-field_def.o:
-	cd $(COMMONDIR) ; make
+atm.o : $(BINDIR)/field_def.o $(BINDIR)/land.o  $(BINDIR)/dynamics.o
 
-driver.o:
-	cd $(DRIVER) ; make $(MODEL)
+$(BINDIR)/field_def.o :
+	$(MAKE) -C $(COMMONDIR) 
 
-land.o:
-	cd $(LANDDIR) ; make 
+$(BINDIR)/land.o :
+	$(MAKE) -C $(LANDDIR) 
+
+$(BINDIR)/dynamics.o :
+	$(MAKE) -C $(DYNAMICS)
+
+
+# driver.o:
+# 	cd $(DRIVER) ; make $(MODEL)
+
+%.o : %.f90
+	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<

@@ -4,23 +4,19 @@ include ../Mkinclude
 
 MODEL = chm
 TARGET = $(MODEL).exe
-OBJS = $(MODEL).o field_def.o driver.o
+OBJS = $(MODEL).o
 SRCS = $(OBJS:.o=.f90)
-MODS = $(OBJS:.o=.mod)
+# MODS = $(OBJS:.o=.mod)
 
-${TARGET} : $(OBJS) 
-	cd $(BINDIR) ; $(FC) $(LDFLAGS) -o $@ $^ $(JOBJ) $(LIBS) $(LIBJCUP)
+all : $(OBJS) $(BINDIR)
+	$(CP) $(OBJS) $(BINDIR) 
+	$(CP) *.mod $(BINDIR)
 
 clean:
-	-rm -f *mod *o
+	$(RM) $(TRASH)
 
-.f90.o:	
-	$(FC) $(FFLAGS) -I$(INCJCUP) -I$(BINDIR) -c $<
-	mv $(MODEL).o $(BINDIR) 
-	mv mod_$(MODEL).mod $(BINDIR)
+$(BINDIR):
+	mkdir -p $@
 
-field_def.o:
-	cd $(COMMONDIR) ; make
-
-driver.o:
-	cd $(DRIVER) ; make $(MODEL)
+%.o : %.f90
+	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<

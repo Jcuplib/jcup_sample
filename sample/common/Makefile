@@ -4,10 +4,16 @@ include ../Mkinclude
 
 OBJS = jcup_interpolation_sample.o field_def.o
 SRCS = $(OBJS:.o=.f90)
-MODS = $(OBJS:.o=.mod)
+# MODS = $(OBJS:.o=.mod)
 
-all: $(SRCS) 
-	$(FC) $(FFLAGS) -c $^ -I$(INCJCUP) -I$(BINDIR) 
-	mv $(OBJS) $(BINDIR) ; mv *.mod $(BINDIR)
+all: $(OBJS) $(BINDIR)
+	$(CP) $(OBJS) $(BINDIR) 
+	$(CP) *.mod $(BINDIR)
 clean:
-	-rm -f *.mod *.o
+	$(RM) $(TRASH)
+
+$(BINDIR):
+	mkdir -p $@
+
+%.o : %.f90
+	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<
