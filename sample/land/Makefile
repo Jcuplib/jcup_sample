@@ -1,27 +1,27 @@
 include ../Mkinclude
 
-.SUFFIXES: .f90 .o
+COMPO	= land
+OBJS	= $(COMPO).o
+MODS	= mod_$(COMPO).mod
+LIB	= $(LANDLIB)
 
-MODEL = land
-TARGET = $(MODEL).exe
-OBJS = $(MODEL).o
-SRCS = $(OBJS:.o=.f90)
-# MODS = $(OBJS:.o=.mod)
+all: lib
 
-all : $(OBJS) $(BINDIR)
-	$(CP) $(OBJS) $(BINDIR) 
-	$(CP) *.mod $(BINDIR)
+lib: $(LIBDIR) $(INCDIR) $(LIBDIR)/$(LIB)
+
+$(LIBDIR)/$(LIB): $(OBJS) 
+	$(AR) $(ARFLAGS) $@ $^
+	$(INSTALL) $(MODS) $(INCDIR)
+
+$(LIBDIR) $(INCDIR):
+	mkdir -p $@
 
 clean:
 	$(RM) $(TRASH)
+realclean: clean
 
-$(BINDIR):
-	mkdir -p $@
+$(COMPO).o: $(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ)
 
-land.o :  $(BINDIR)/field_def.o
-
-$(BINDIR)/field_def.o:
-	$(MAKE) -C $(COMMONDIR) 
-
-%.o : %.f90
-	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<
+### Is below necessary/suitable ?
+$(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ):
+	$(MAKE) -C $(COMMONDIR)

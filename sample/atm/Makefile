@@ -1,40 +1,42 @@
 include ../Mkinclude
 
-.SUFFIXES: .f90 .o
+COMPO	= atm
+OBJS	= $(COMPO).o
+MODS	= mod_$(COMPO).mod
+LIB	= $(ATMLIB)
 
-MODEL = atm
-TARGET = $(MODEL).exe
-OBJS = $(MODEL).o
-SRCS = $(OBJS:.o=.f90)
-# MODS = $(OBJS:.o=.mod)
 
-all : $(OBJS) $(BINDIR)
-	$(CP) $(OBJS) $(BINDIR) 
-	$(CP) *.mod $(BINDIR)
+all: lib
+
+lib: $(LIBDIR) $(INCDIR) $(LIBDIR)/$(LIB)
+
+$(LIBDIR)/$(LIB): $(OBJS) 
+	$(AR) $(ARFLAGS) $@ $^
+	$(INSTALL) $(MODS) $(INCDIR)
+
+$(LIBDIR) $(INCDIR):
+	mkdir -p $@
 
 clean: clean-sub
 	$(RM) $(TRASH)
-
 clean-sub:
-	$(MAKE) -C $(DYNAMICS) clean
+	$(MAKE) -C dynamics clean
 
-$(BINDIR):
-	mkdir -p $@
+realclean: clean
+realclean: realclean-sub
+realclean-sub:
+	$(MAKE) -C dynamics realclean
 
-atm.o : $(BINDIR)/field_def.o $(BINDIR)/land.o  $(BINDIR)/dynamics.o
+$(COMPO).o: $(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ)
+$(COMPO).o: $(LIBDIR)/$(DYNLIB) $(LIBDIR)/$(LANDLIB)
+#$(COMPO).o: dynamics/dinamics.o
 
-$(BINDIR)/field_def.o :
-	$(MAKE) -C $(COMMONDIR) 
-
-$(BINDIR)/land.o :
-	$(MAKE) -C $(LANDDIR) 
-
-$(BINDIR)/dynamics.o :
-	$(MAKE) -C $(DYNAMICS)
-
-
-# driver.o:
-# 	cd $(DRIVER) ; make $(MODEL)
-
-%.o : %.f90
-	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<
+### Is below necessary/suitable ?
+$(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ):
+	$(MAKE) -C $(COMMONDIR)
+$(LIBDIR)/$(LANDLIB): 
+	$(MAKE) -C $(LANDDIR)
+$(LIBDIR)/$(DYNLIB): 
+	$(MAKE) -C $(DYNDIR)
+# dynamics/dynamics.o:
+# 	$(MAKE) -C $(DYNAMICSDIR)

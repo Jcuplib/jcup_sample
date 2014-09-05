@@ -1,22 +1,30 @@
 include ../Mkinclude
 
-.SUFFIXES: .f90 .o
 
-OBJS = driver.o
-SRCS = $(OBJS:.o=.f90)
-MODS = $(OBJS:.o=.mod)
+TARGETS		= atm_driver ocn_driver chm_driver
 
-atm: $(SRCS) 
-	$(FC) $(FFLAGS) -c $^ -I$(BINDIR) -DATM
-	mv $(OBJS) $(BINDIR) 
-ocn: $(SRCS) 
-	$(FC) $(FFLAGS) -c $^ -I$(BINDIR) -DOCN
-	mv $(OBJS) $(BINDIR) 
-chm: $(SRCS) 
-	$(FC) $(FFLAGS) -c $^ -I$(BINDIR) -DCHM
-	mv $(OBJS) $(BINDIR) 
-mi6: $(SRCS) 
-	$(FC) $(FFLAGS) -c $^ -I$(BINDIR) -DMI6
-	mv $(OBJS) $(BINDIR) 
+
+LIBS4ATM 	= $(LIBDIR)/$(ATMLIB) $(LIBDIR)/$(DYNLIB) $(LIBDIR)/$(LANDLIB) $(LIBDIR)/$(COMMONLIB)
+LIBS4OCN 	= $(LIBDIR)/$(OCNLIB) $(LIBDIR)/$(ICELIB) $(LIBDIR)/$(COMMONLIB)
+LIBS4CHM	= $(LIBDIR)/$(CHMLIB) $(LIBDIR)/$(COMMONLIB)
+
+all: $(TARGETS) $(BINDIR)
+	$(INSTALL) $(TARGETS) $(BINDIR)
 clean:
-	-rm -f *.mod *.o
+	$(RM) $(TRASH)
+realclean: clean
+	$(RM) $(TARGETS)
+
+atm_driver: atm_driver.o
+	$(LINK.f90) -o $@ $^  $(LIBS4ATM)  -L$(JCUPLIBDIR) -ljcup $(LIBDIR)/$(JINTPOBJ)
+
+ocn_driver: ocn_driver.o
+	$(LINK.f90) -o $@ $^  $(LIBS4OCN)  -L$(JCUPLIBDIR) -ljcup $(LIBDIR)/$(JINTPOBJ)
+
+chm_driver: chm_driver.o
+	$(LINK.f90) -o $@ $^  $(LIBS4CHM)  -L$(JCUPLIBDIR) -ljcup $(LIBDIR)/$(JINTPOBJ)
+
+
+
+$(BINDIR):
+	mkdir -p $@

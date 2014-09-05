@@ -1,34 +1,32 @@
 include ../Mkinclude
 
-.SUFFIXES: .f90 .o
+COMPO	= ocn
+OBJS	= $(COMPO).o
+MODS	= mod_$(COMPO).mod
+LIB	= $(OCNLIB)
 
-MODEL = ocn
-TARGET = $(MODEL).exe
-OBJS = $(MODEL).o
-SRCS = $(OBJS:.o=.f90)
-# MODS = $(OBJS:.o=.mod)
 
-all : $(OBJS) $(BINDIR)
-	$(CP) $(OBJS) $(BINDIR) 
-	$(CP) *.mod $(BINDIR)
+all: lib
+
+lib: $(LIBDIR) $(INCDIR) $(LIBDIR)/$(LIB)
+
+$(LIBDIR)/$(LIB): $(OBJS) 
+	$(AR) $(ARFLAGS) $@ $^
+	$(INSTALL) $(MODS) $(INCDIR)
+
+$(LIBDIR) $(INCDIR):
+	mkdir -p $@
 
 clean:
 	$(RM) $(TRASH)
+realclean: clean
 
-$(BINDIR):
-	mkdir -p $@
+$(COMPO).o: $(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ)
+$(COMPO).o: $(LIBDIR)/$(ICELIB)
 
-ocn.o : $(BINDIR)/ice.o $(BINDIR)/field_def.o
+### Is below necessary/suitable ?
+$(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ):
+	$(MAKE) -C $(COMMONDIR)
+$(LIBDIR)/$(ICELIB): 
+	$(MAKE) -C $(ICEDIR)
 
-
-$(BINDIR)/field_def.o:
-	$(MAKE) -C $(COMMONDIR) 
-
-$(BINDIR)/ice.o:
-	$(MAKE) -C $(ICEDIR) 
-
-# driver.o:
-# 	cd $(DRIVER) ; make $(MODEL)
-
-%.o : %.f90
-	$(FC) $(FFLAGS) -I$(JCUPINCDIR) -I$(BINDIR)  -c $<
