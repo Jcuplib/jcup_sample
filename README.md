@@ -6,8 +6,10 @@ There are two sample code for Jcup in this archive.
 - `sample_simple` is the smallest one to check function of Jcup. This is
 MPMD-type application and have two binaries, each of these do send/recv data.
 
-- `sample` is an skelton of usual climate model, consists of three
+- `sample` is a skelton of usual climate model, consists of three
 binaries, each of these also just do send/recv data.
+
+This version is tested for Jcup 3.070100.
 
 Usage.
 ======
