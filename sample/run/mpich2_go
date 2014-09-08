@@ -1,10 +1,10 @@
+#!/bin/bash
 atm_pe=4
 ocn_pe=3
 chm_pe=1
-rm miroc_mm.Atm
-rm miroc_mm.Ocn
-rm miroc_mm.Chm
-ln -s ../bin/atm.exe miroc_mm.Atm
-ln -s ../bin/ocn.exe miroc_mm.Ocn
-ln -s ../bin/chm.exe miroc_mm.Chm
-mpiexec -n ${atm_pe} ./miroc_mm.Atm : -n ${ocn_pe} ./miroc_mm.Ocn : -n ${chm_pe} ./miroc_mm.Chm 
+ln -fs ../bin/atm_driver
+ln -fs ../bin/ocn_driver
+ln -fs ../bin/chm_driver
+mpiexec -n ${atm_pe} ./atm_driver : \
+        -n ${ocn_pe} ./ocn_driver : \
+        -n ${chm_pe} ./chm_driver 1> Stdout 2>Stderr

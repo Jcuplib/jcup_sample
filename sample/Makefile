@@ -1,19 +1,19 @@
 include Mkinclude
 
-all:
-	cd $(COMMONDIR) ; make ; cd ..
-	cd $(LANDDIR) ; make ; cd ..
-	cd $(ICEDIR) ; make ; cd ..
-	cd $(ATMDIR) ; make ; cd ..
-	cd $(OCNDIR) ; make ; cd ..
-	cd $(CHMDIR) ; make ; cd ..
+all clean realclean:
+	$(MAKE) -C $(COMMONDIR) $@ 
+	$(MAKE) -C $(CHMDIR) $@
+	$(MAKE) -C $(ICEDIR) $@
+	$(MAKE) -C $(OCNDIR) $@
+	$(MAKE) -C $(LANDDIR) $@
+	$(MAKE) -C $(ATMDIR) $@
+	$(MAKE) -C $(DRIVERDIR) $@
 
-clean:
-	cd bin ; rm * ; cd ../
-	cd $(LANDDIR) ; make clean ; cd ../
-	cd $(ICEDIR) ; make clean ; cd ../
-	cd $(ATMDIR) ; make clean ; cd ../
-	cd $(OCNDIR) ; make clean ; cd ../
-	cd $(CHMDIR) ; make clean ; cd ../
-	cd $(CCNDIR) ; make clean ; cd ../
-	cd $(COMMONDIR) ; make clean ; cd ../
+realclean: clean-bin clean-lib clean-inc
+
+clean-bin:
+	-$(RM) bin/*
+clean-lib:
+	-$(RM) lib/*
+clean-inc:
+	-$(RM) include/*

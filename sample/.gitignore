@@ -1,0 +1,12 @@
+*~
+*.o
+*.mod
+*.lst
+
+/driver/atm_driver
+/driver/ocn_driver
+/driver/chm_driver
+
+/bin
+/lib
+/include

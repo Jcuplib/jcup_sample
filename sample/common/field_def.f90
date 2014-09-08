@@ -569,7 +569,8 @@ subroutine cal_mn(total_proc_num, m, n)
   integer, intent(OUT) :: m, n
   
   n = 1
-  do m = aint(sqrt(dble(total_proc_num))+0.999999999d0), total_proc_num
+!!$D  do m = aint(sqrt(dble(total_proc_num))+0.999999999d0), total_proc_num
+  do m = int(sqrt(dble(total_proc_num))+0.999999999d0), total_proc_num
     if (mod(total_proc_num,m)==0) then
       n = total_proc_num/m
       return

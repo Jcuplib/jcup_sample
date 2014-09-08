@@ -1,4 +1,8 @@
 all:
-	cd ../ ; make ; cd run
+	@echo '% make {compile|run|clean}'
+run:
+	./mpich2_go 
 clean:
-	cd .. ; make clean ; cd run
+	rm -f *.log *.log.* fort.* Stdout Stderr atm_driver ocn_driver chm_driver
+compile:
+	make -C ../ all

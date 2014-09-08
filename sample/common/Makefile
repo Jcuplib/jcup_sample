@@ -1,13 +1,28 @@
 include ../Mkinclude
 
-.SUFFIXES: .f90 .o
+# JINTPOBJ is defined in ../Mkinclude as follows;
+# JINTPOBJ=interpolate_data.o
 
-OBJS = jcup_interpolation_sample.o field_def.o
-SRCS = $(OBJS:.o=.f90)
-MODS = $(OBJS:.o=.mod)
 
-all: $(SRCS) 
-	$(FC) $(FFLAGS) -c $^ -I$(INCJCUP) -I$(BINDIR) 
-	mv $(OBJS) $(BINDIR) ; mv *.mod $(BINDIR)
+OBJS = field_def.o jcup_interpolation_sample.o
+MODS = component_field.mod  field_common.mod  field_def.mod  jcup_interpolation_sample.mod
+
+all: lib
+
+lib: $(LIBDIR) $(INCDIR) $(LIBDIR)/$(COMMONLIB) $(LIBDIR)/$(JINTPOBJ)
+
+$(LIBDIR)/$(COMMONLIB): $(OBJS) 
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+	$(INSTALL) $(MODS) $(INCDIR)
+
+$(LIBDIR)/$(JINTPOBJ): $(JINTPOBJ)
+	$(INSTALL) $(JINTPOBJ) $(LIBDIR)
+
+$(LIBDIR) $(INCDIR):
+	mkdir -p $@
+
 clean:
-	-rm -f *.mod *.o
+	$(RM) $(TRASH)
+realclean: clean
+
+$(JINTPOBJ): jcup_interpolation_sample.o
