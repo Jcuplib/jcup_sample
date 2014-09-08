@@ -3,8 +3,48 @@
 ###
 # TOPDIR and JCUPDIR should be defined as environment variables.
 ###
-# TOPDIR = $(HOME)/Jcup/sample
-# JCUPDIR = $(HOME)/Jcup
+# TOPDIR 	= $(HOME)/Jcup/sample
+# JCUPDIR 	= $(HOME)/Jcup
+
+###
+# set compilers and compile options
+### 
+
+FC		= mpif90 
+LD     		= mpif90
+
+OPTIMIZEFLAG	= -O
+# DEBUGFLAG 	= -g
+CPPFLAG 	= -cpp
+DIALECTFLAG	+= -ffree-line-length-none
+# DIALECTFLAG	+= -assume byterecl
+
+INCLUDEFLAG	= -I$(INCDIR) -I$(JCUPINCDIR)
+FFLAGS		= $(OPTIMIZEFLAG) $(DEBUGFLAG) $(DIALECTFLAG) $(CPPFLAG) $(INCLUDEFLAG)
+LDFLAGS 	= 
+
+###
+# Other commands
+### 
+
+AR     		= ar
+ARFLAGS		= ruv
+MV     		= mv -f
+CP      	= cp -f
+RM      	= rm -f
+
+INSTALL 	= cp -u
+# INSTALL	= install
+
+
+###
+# make clean cleanup these.
+##
+TRASH	= *.o *~ *.mod *.lst
+
+########################################################################
+# You may not edit below.
+########################################################################
 
 BINDIR   	= $(TOPDIR)/bin
 LIBDIR   	= $(TOPDIR)/lib
@@ -41,40 +81,6 @@ JINTPOBJ 	= interpolate_data.o
 
 
 
-FC     	= mpif90 
-LD     	= mpif90
-
-AR     	= ar
-ARFLAGS	= ruv
-
-MV     		= mv -f
-CP      	= cp -f
-RM      	= rm -f
-
-INSTALL 	= cp -u
-# INSTALL	= install
-
-
-TRASH	= *.o *~ *.mod *.lst
-
-
-# # 32-bit mode
-# DEFMPI = MPI2
-# #FFLAGS = -c -O2 -KV8PLUS -Am -Ay
-# FFLAGS = -cpp -mcmodel medium -shared-intel -O1 -debug all -check all -g
-# #FFLAGS = -c -g -cpp -ladebug 
-# LDOPT  = ${libdir}/libjcup.a
-
-INCLUDEFLAG	= -I$(INCDIR) -I$(JCUPINCDIR)
-
-OPTIMIZEFLAG	= -O
-# DEBUGFLAG 	= -g
-CPPFLAG 	= -cpp
-DIALECTFLAG	+= -ffree-line-length-none
-# DIALECTFLAG	+= -assume byterecl
-
-FFLAGS		= $(OPTIMIZEFLAG) $(DEBUGFLAG) $(DIALECTFLAG) $(CPPFLAG) $(INCLUDEFLAG)
-LDFLAGS 	= 
 
 ###
 # Following GNUmake's implicit rule.
