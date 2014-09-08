@@ -1,0 +1,9 @@
+/atm_driver
+/chm_driver
+/ocn_driver
+/Stderr
+/Stdout
+/fort.*
+/*.log
+/*.log.*
+
